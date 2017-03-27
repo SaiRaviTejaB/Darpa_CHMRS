@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -14,6 +15,7 @@ namespace WindowsFormsApplication2
 {
     public partial class Form1 : Form
     {
+        Stopwatch sw = Stopwatch.StartNew();
         double[] mass_ratio;
         Boolean flag = true;
         string fldrpath;
@@ -21,6 +23,7 @@ namespace WindowsFormsApplication2
         List<string> list = new List<string>();
         public Form1(double[] ms_rat, string fdpth)
         {
+            sw.Start();
             InitializeComponent();
             this.Text = fdpth;
             this.Controls.Add(grid);
@@ -31,6 +34,7 @@ namespace WindowsFormsApplication2
             grid.ColumnHeadersVisible = false;
             grid.AllowUserToResizeColumns = false;
             grid.AllowUserToResizeRows = false;
+            grid.AllowUserToAddRows = false;
             //this.Cursor = Cursors.Arrow;
             DataGridViewRow row_forheight = this.grid.RowTemplate;
             //double hei = this.grid.Height / (num_rows);
@@ -63,7 +67,6 @@ namespace WindowsFormsApplication2
             //foreach (string file in Directory.EnumerateFiles(fldrpath, "*.raw"))
             foreach (string file in Directory.GetFiles(fldrpath, "*.raw").OrderBy(f => f))
             {
-
                 bool flag = Analytics.analytics(mass_ratio, file);
                 while(flag != true)
                 {
@@ -83,7 +86,7 @@ namespace WindowsFormsApplication2
                 {
                     char[] delimiterChars = { ' ' };
                     string[] words = l.Split(delimiterChars);
-                    Console.WriteLine(words[1]);
+                    //Console.WriteLine(words[1]);
                     if (Int32.Parse(words[1]) == 0)
                         grid.Rows[rowId].Cells[i].Style.BackColor = Color.Red;
                     else
@@ -92,13 +95,17 @@ namespace WindowsFormsApplication2
 
                 }
                 loop_num++;
+                //if (loop_num >= 2) break;
             }
+            //Console.WriteLine(loop_num);
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             grid.Dock = DockStyle.Fill;
 
             this.grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             grid.Columns[grid.ColumnCount - 1].MinimumWidth = 8;
             grid.CurrentCell.Selected = false;
+            sw.Stop();
+            //Console.WriteLine(sw.ElapsedMilliseconds);
             //Console.WriteLine(this.Height);
 
             //grid.AutoResizeRows(DataGridViewAutoSizeRowsMode.AllCells);

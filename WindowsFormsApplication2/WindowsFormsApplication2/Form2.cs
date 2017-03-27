@@ -19,6 +19,11 @@ namespace WindowsFormsApplication2
         {
             InitializeComponent();
             //this.SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+            foreach (var item in Values)
+            {
+                Console.Write(item.ToString()+" ");
+            }
+            Console.WriteLine();
             this.Text = flname;
             TextBox t = new TextBox();
             t.Text = "Spot Number: " + (Values[0]).ToString();
@@ -37,31 +42,34 @@ namespace WindowsFormsApplication2
             object Mass_List = null;
             object Peak_Flags = null;
             int Array_Size = 0;
-            rawfile.GetMassListFromScanNum(ref ScanNumber, null, 0, 0, 0, 0, ref Centroid_Peak_Width, ref Mass_List, ref Peak_Flags, ref Array_Size);
+            rawfile.GetMassListFromScanNum(ref ScanNumber, null, 1, 0, 0, 0, ref Centroid_Peak_Width, ref Mass_List, ref Peak_Flags, ref Array_Size);
             double[,] ms_list = (double[,])Mass_List;
             //Random rdn = new Random();
             //chart1.Series.Add("Series2");
             double[] found = new double[(Values.Length-2)/2];
-            int start = 2;
+            //int start = 2;
             for (int i = 0; i < ms_list.Length/2; i++)
             {
-                for(int j = start; j < Values.Length; j = j + 2)
+                /*for(int j = start; j < Values.Length; j = j + 2)
                 {
-                    if ((ms_list[0,i] > Values[j]-0.05) && (ms_list[0, i] < Values[j] + 0.05))
+                    if ((ms_list[0,i] > Values[j]-0.005) && (ms_list[0, i] < Values[j] + 0.005))
                     {
                         found[(j - 2) / 2] = ms_list[0, i];
                         start = j + 2;
                     }
-                }
+                }*/
                 DataPoint dp2 = new DataPoint(ms_list[0, i], ms_list[1, i]);
                 chart1.Series["MassSpectrum"].Points.Add(dp2);
                 //  (rdn.Next(0, 10), rdn.Next(0, 10));
             }
-            for (int j = 0; j < found.Length; j++)
+            for (int j = 2; j < Values.Length; j = j+2)
             {
                 //chart1.Series["MassSpectrum"].Points.FindByValue(found[j], "X").IsValueShownAsLabel = true; // = "("+Values[2*j+2]+", "+Values[2*j+3]+")";
-                DataPoint dtp = chart1.Series["MassSpectrum"].Points.FindByValue(found[j], "X");
-                dtp.Label = dtp.XValue.ToString();               //"(" + Values[2 * j + 2] + ", " + Values[2 * j + 3] + ")";
+                DataPoint dtp = chart1.Series["MassSpectrum"].Points.Aggregate((x, y) => Math.Abs(x.XValue - Values[j]) < Math.Abs(y.XValue - Values[j]) ? x : y);
+                //DataPoint dtp = chart1.Series["MassSpectrum"].Points.FindByValue(found[j], "X");
+                double temp = new double();
+                temp = Math.Round(dtp.XValue, 2);
+                dtp.Label = temp.ToString();               //"(" + Values[2 * j + 2] + ", " + Values[2 * j + 3] + ")";
                 
             }
             //chart1.Series["Series2"].Enabled = false;
