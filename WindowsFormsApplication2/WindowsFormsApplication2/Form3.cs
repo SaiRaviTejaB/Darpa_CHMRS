@@ -32,7 +32,14 @@ namespace WindowsFormsApplication2
             char[] delimiterChars = { ' ', ',', };
             string[] indmsratios = input_msratio.Split(delimiterChars);
             double[] msratios = Array.ConvertAll(indmsratios, double.Parse);
-            Form1 frm = new Form1(msratios, path);
+            double[][] msrt = new double[3][];
+            msrt[0] = new double[] { 196.5, 1.0, 197.5, 1.0 };
+            msrt[1] = new double[] { 425.55, 1.0, 443.330, 1.0};
+            msrt[2] = new double[] { 332.33, 1.0 };
+            //msrt[3] = new double[] { 25.5, 0, 25.5, 1 };
+            //msrt[4] = new double[] { };
+            //Form1 frm = new Form1(msratios, path);
+            Form1 frm = new Form1(msrt, path);
             frm.Show();
         }
 

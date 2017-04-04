@@ -16,12 +16,12 @@ namespace WindowsFormsApplication2
     public partial class Form1 : Form
     {
         Stopwatch sw = Stopwatch.StartNew();
-        double[] mass_ratio;
+        double[][] mass_ratio;
         Boolean flag = true;
         string fldrpath;
         DataGridView grid = new DataGridView();
         List<string> list = new List<string>();
-        public Form1(double[] ms_rat, string fdpth)
+        public Form1(double[][] ms_rat, string fdpth)
         {
             sw.Start();
             InitializeComponent();
@@ -90,7 +90,7 @@ namespace WindowsFormsApplication2
                     if (Int32.Parse(words[1]) == 0)
                         grid.Rows[rowId].Cells[i].Style.BackColor = Color.Red;
                     else
-                        grid.Rows[rowId].Cells[i].Style.BackColor = colorSet[Int32.Parse(words[1])];
+                        grid.Rows[rowId].Cells[i].Style.BackColor = colorSet[Int32.Parse(words[1])-1];
                     i++;
 
                 }
