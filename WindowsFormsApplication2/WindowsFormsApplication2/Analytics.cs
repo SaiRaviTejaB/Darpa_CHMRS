@@ -16,12 +16,8 @@ namespace WindowsFormsApplication2
 {
     public static class Analytics
     {
-        public static bool analytics(double[][] m_z, string flname)
+        public static bool analytics(double[][] m_z, double[][] R_m_z, string flname)
         {
-            //System.IO.StreamWriter bebe = new System.IO.StreamWriter("test.bebe");
-            //bebe.Write("m_z {0} {1}\n", m_z, flname);
-            //bebe.Close();
-
             //Dictionary<double, double> mzlist = new Dictionary<double, double>();
             /*for (int i = 0; i < m_z.GetLength(0); i++)
             {
@@ -37,8 +33,6 @@ namespace WindowsFormsApplication2
             rawfile.GetLastSpectrumNumber(ref last_scan);
             string txt_fl = flname.Remove(flname.Length - 4);
             System.IO.StreamWriter file = new System.IO.StreamWriter(txt_fl+".txt");
-            //System.IO.StreamWriter baba = new System.IO.StreamWriter(txt_fl + ".baba");
-            //baba.Write("m_z {0}\n", m_z);
             for (int ScanNumber = 1; ScanNumber <= last_scan; ScanNumber++)
             {
                 double CentroidPeakWidth = 0.0;
@@ -58,13 +52,14 @@ namespace WindowsFormsApplication2
                 bool found = false;
                 int row_flag = -1;
                 List<double> row_fvalues = new List<double>();
+
+                // For products search
                 foreach (double[] row in m_z)
                 {
                     for (int lp=0; lp<row.Length+1; lp=lp+2)
                     {
                         if (lp != 0 && row[lp - 1] == 1.0 && found == false)
                         {
-                            Console.WriteLine(lp.ToString() +" "+ row[lp-1].ToString()+ " " + found.ToString()+" "+ iter);
                             row_fvalues.Clear();
                             if(row_flag == iter)
                             {
@@ -76,15 +71,14 @@ namespace WindowsFormsApplication2
                         }
                         if (lp == row.Length) break;
                         found = false;
+                        double mzaux = row[lp];
                         for (int j = 1; j < mslist.Length / 2; j++)
                         {
                             double mz = mslist[0, j];
                             double intensity = mslist[1, j];
                             
-                            double mzaux = row[lp];
                             if ((mz > mzaux - 0.05) && (mz < mzaux + 0.05))
                             {
-                                //baba.Write("{0},{1},{2} --> {3}\n", ScanNumber, mz, intensity, mzaux);
                                 if (intensity >= 30)
                                 {
                                     if (flag == false)
@@ -94,8 +88,6 @@ namespace WindowsFormsApplication2
                                         row_flag = iter;
                                     }
                                     found = true;
-                                    //baba.Write("{0},{1},{2}\n", ScanNumber, mz, intensity);
-                                    //mzlist[mzaux] += intensity;
                                     row_fvalues.Add(Math.Round(mz, 2));
                                     row_fvalues.Add(Math.Round(intensity, 2));
                                     //file.Write(Math.Round(mz, 2) + " " + Math.Round(intensity, 2) + " ");
@@ -105,8 +97,6 @@ namespace WindowsFormsApplication2
                             
                         }
                     }
-                    //check for last element usefulness;
-
                     //Write in file
                     foreach(double val in row_fvalues)
                     {
@@ -114,13 +104,52 @@ namespace WindowsFormsApplication2
                     }
                     iter++;
                 }
-                if (flag == true) file.WriteLine();
-                else file.WriteLine("0");
+                if (flag == false) file.Write("0" + " ");
+                file.Write("1.618" + " ");
+                // For Reactants Search
+                found = false;
+                row_fvalues.Clear();
+                foreach (double[] row in R_m_z)
+                {
+                    for (int lp = 0; lp < row.Length + 1; lp = lp + 2)
+                    {
+                        if (lp != 0 && row[lp - 1] == 1.0 && found == false)
+                        {
+                            row_fvalues.Clear();
+                            break;
+                        }
+                        if (lp == row.Length) break;
+                        found = false;
+                        double mzaux = row[lp];
+                        for (int j = 1; j < mslist.Length / 2; j++)
+                        {
+                            double mz = mslist[0, j];
+                            double intensity = mslist[1, j];
 
+                            if ((mz > mzaux - 0.05) && (mz < mzaux + 0.05))
+                            {
+                                if (intensity >= 30)
+                                {
+                                    found = true;
+                                    row_fvalues.Add(Math.Round(mz, 2));
+                                    row_fvalues.Add(Math.Round(intensity, 2));
+                                    //file.Write(Math.Round(mz, 2) + " " + Math.Round(intensity, 2) + " ");
+                                    break;
+                                }
+                            }
+
+                        }
+                    }
+                    //Write in file
+                    foreach (double val in row_fvalues)
+                    {
+                        file.Write(val + " ");
+                    }
+                }
+                file.WriteLine();
             }
 
             file.Close();
-            //baba.Close();
             return true;
         }
     }

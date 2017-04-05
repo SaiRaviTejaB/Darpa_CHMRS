@@ -17,11 +17,12 @@ namespace WindowsFormsApplication2
     {
         Stopwatch sw = Stopwatch.StartNew();
         double[][] mass_ratio;
+        double[][] R_mass_ratio;
         Boolean flag = true;
         string fldrpath;
         DataGridView grid = new DataGridView();
         List<string> list = new List<string>();
-        public Form1(double[][] ms_rat, string fdpth)
+        public Form1(double[][] ms_rat, double[][] R_ms_rat, string fdpth)
         {
             sw.Start();
             InitializeComponent();
@@ -40,6 +41,7 @@ namespace WindowsFormsApplication2
             //double hei = this.grid.Height / (num_rows);
             row_forheight.Height = 11;//Convert.ToInt32(Math.Floor(hei));
             mass_ratio = ms_rat;
+            R_mass_ratio = R_ms_rat;
             fldrpath = fdpth;
         }
 
@@ -67,7 +69,7 @@ namespace WindowsFormsApplication2
             //foreach (string file in Directory.EnumerateFiles(fldrpath, "*.raw"))
             foreach (string file in Directory.GetFiles(fldrpath, "*.raw").OrderBy(f => f))
             {
-                bool flag = Analytics.analytics(mass_ratio, file);
+                bool flag = Analytics.analytics(mass_ratio, R_mass_ratio, file);
                 while(flag != true)
                 {
                     continue;

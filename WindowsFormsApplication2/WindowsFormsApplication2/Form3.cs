@@ -34,12 +34,16 @@ namespace WindowsFormsApplication2
             double[] msratios = Array.ConvertAll(indmsratios, double.Parse);
             double[][] msrt = new double[3][];
             msrt[0] = new double[] { 196.5, 1.0, 197.5, 1.0 };
-            msrt[1] = new double[] { 425.55, 1.0, 443.330, 1.0};
+            msrt[1] = new double[] { 425.55, 0.0, 443.330, 1.0};
             msrt[2] = new double[] { 332.33, 1.0 };
+            double[][] R_msrt = new double[3][];
+            R_msrt[0] = new double[] { 407.5, 1.0};
+            R_msrt[1] = new double[] { 225.55, 0.0, 243.330, 1.0 };
+            R_msrt[2] = new double[] { 390.33, 1.0 };
             //msrt[3] = new double[] { 25.5, 0, 25.5, 1 };
             //msrt[4] = new double[] { };
             //Form1 frm = new Form1(msratios, path);
-            Form1 frm = new Form1(msrt, path);
+            Form1 frm = new Form1(msrt, R_msrt, path);
             frm.Show();
         }
 
